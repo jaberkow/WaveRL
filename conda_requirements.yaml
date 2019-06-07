@@ -1,0 +1,16 @@
+name: RL_control
+dependencies:
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - seaborn
+  - ipykernel
+  - ipython
+  - jupyter
+  - jupyter 
+  - jupyter_client
+  - jupyter_console  
+  - jupyter_core  
+  - psutil
+  - setproctitle
