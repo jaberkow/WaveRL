@@ -1,5 +1,5 @@
-# Hot_Start_RL
-A package for efficient hot starting of RL agents in complex physical environments
+# ComplexRL
+A package for training RL agents in complex physical environments
 
 
 
