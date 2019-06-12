@@ -16,6 +16,7 @@ sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zli
 ```
 brew install cmake openmpi
 ```
+### Setting up the conda environment
 
 Clone the repository
 ```
