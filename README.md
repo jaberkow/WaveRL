@@ -1,6 +1,13 @@
 # ComplexRL
 A package for training RL agents in complex physical environments
 
+## Contents
+* complex_envs/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
+	* train.py :  This script trains an agent (see example below)
+	* rollout.py : This script rolls out a trained agent (see example below)
+	* simple_environment.py :  This in an implementation of the simple corridor environment
+* configs/ 
+	* config.yml : This file holds the default parameters for the scripts and environments
 
 
 ## Setup
@@ -33,3 +40,5 @@ Activate the newly created environment
 ```
 $ conda activate baseline_env
 ```
+## Training an agent
+
