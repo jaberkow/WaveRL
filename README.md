@@ -8,7 +8,8 @@ A package for training RL agents in complex physical environments
 	* simple_environment.py :  This in an implementation of the simple corridor environment
 * configs/ 
 	* config.yml : This file holds the default parameters for the scripts and environments
-
+* install_stable_requirements.sh : a shell script for installing all the necessary packages
+* conda_requirements_baseline.yaml : A specification of the conda environment
 
 ## Setup
 First, [Install Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
