@@ -42,3 +42,20 @@ $ conda activate baseline_env
 ```
 ## Training an agent
 
+To train an agent for 1000 timesteps and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
+
+```
+$ python train.py -n 1000 -m my_first_agent 
+```
+This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
+
+```
+$ tensorboard --logdir tensorboard_log/
+```
+## Rolling out a trained agent
+
+To rollout a trained agent that is stored at 'complex_envs/my_first_agent.pkl' for 9 steps, run the following command from the same folder:
+
+```
+$ python rollout.py -n 9 -i my_first_agent.pkl
+```
