@@ -1,0 +1,8 @@
+# general params for training
+num_learning_steps: 100
+num_rollout_steps: 10
+learning_rate_val: 0.00025
+
+# Configuration params for the corridor environment
+corridor_length: 10
+

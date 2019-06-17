@@ -1,126 +1,62 @@
-# Insight_Project_Framework
-Framework for machine learning projects at Insight Data Science.
+# ComplexRL
+A package for training RL agents in complex physical environments
 
-## Motivation for this project format:
-- **Insight_Project_Framework** : Put all source code for production within structured directory
-- **tests** : Put all source code for testing in an easy to find location
-- **configs** : Enable modification of all preset variables within single directory (consisting of one or many config files for separate tasks)
-- **data** : Include example a small amount of data in the Github repository so tests can be run to validate installation
-- **build** : Include scripts that automate building of a standalone environment
-- **static** : Any images or content to include in the README or web framework if part of the pipeline
+## Contents
+* complex_envs/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
+	* train.py :  This script trains an agent (see example below)
+	* rollout.py : This script rolls out a trained agent (see example below)
+	* simple_environment.py :  This in an implementation of the simple corridor environment
+* configs/ 
+	* config.yml : This file holds the default parameters for the scripts and environments
+* install_stable_requirements.sh : a shell script for installing all the necessary packages
+* conda_requirements_baseline.yaml : A specification of the conda environment
 
 ## Setup
-Clone repository and update python path
+First, [Install Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
+
+Then update and install the following system packages:
+
+### Ubuntu Instructions:
 ```
-repo_name=Insight_Project_Framework # URL of your new repository
-username=mrubash1 # Username for your personal github account
-git clone https://github.com/$username/$repo_name
-cd $repo_name
-echo "export $repo_name=${PWD}" >> ~/.bash_profile
-echo "export PYTHONPATH=$repo_name/src:${PYTHONPATH}" >> ~/.bash_profile
-source ~/.bash_profile
+sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev openmpi-bin mpich lam-runtime
 ```
-Create new development branch and switch onto it
+### Mac OS X Instructions:
 ```
-branch_name=dev-readme_requisites-20180905 # Name of development branch, of the form 'dev-feature_name-date_of_creation'}}
-git checkout -b $branch_name
+brew install cmake openmpi
 ```
+### Setting up the conda environment
 
-## Initial Commit
-Lets start with a blank slate: remove `.git` and re initialize the repo
+Clone the repository
 ```
-cd $repo_name
-rm -rf .git   
-git init   
-git status
-```  
-You'll see a list of file, these are files that git doesn't recognize. At this point, feel free to change the directory names to match your project. i.e. change the parent directory Insight_Project_Framework and the project directory Insight_Project_Framework:
-Now commit these:
+$ git clone https://github.com/jaberkow/Insight_Project.git
 ```
-git add .
-git commit -m "Initial commit"
-git push origin $branch_name
+Make sure 'install_requirements.sh' has the correct permissions and run it.
+
 ```
-
-## Requisites
-
-- List all packages and software needed to build the environment
-- This could include cloud command line tools (i.e. gsutil), package managers (i.e. conda), etc.
-
-#### Dependencies
-
-- [Streamlit](streamlit.io)
-
-#### Installation
-To install the package above, pleae run:
-```shell
-pip install -r requiremnts
+$ chmod 755 install_stable_requirements.sh
+$ ./install_stable_requirements.sh
 ```
+Activate the newly created environment
 
-## Build Environment
-- Include instructions of how to launch scripts in the build subfolder
-- Build scripts can include shell scripts or python setup.py files
-- The purpose of these scripts is to build a standalone environment, for running the code in this repository
-- The environment can be for local use, or for use in a cloud environment
-- If using for a cloud environment, commands could include CLI tools from a cloud provider (i.e. gsutil from Google Cloud Platform)
 ```
-# Example
-
-# Step 1
-# Step 2
+$ conda activate baseline_env
 ```
+## Training an agent
 
-## Configs
-- We recommond using either .yaml or .txt for your config files, not .json
-- **DO NOT STORE CREDENTIALS IN THE CONFIG DIRECTORY!!**
-- If credentials are needed, use environment variables or HashiCorp's [Vault](https://www.vaultproject.io/)
+To train an agent for 1000 timesteps and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
 
-
-## Test
-- Include instructions for how to run all tests after the software is installed
 ```
-# Example
-
-# Step 1
-# Step 2
+$ python train.py -n 1000 -m my_first_agent 
 ```
+This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
 
-## Run Inference
-- Include instructions on how to run inference
-- i.e. image classification on a single image for a CNN deep learning project
 ```
-# Example
-
-# Step 1
-# Step 2
+$ tensorboard --logdir tensorboard_log/
 ```
+## Rolling out a trained agent
 
-## Build Model
-- Include instructions of how to build the model
-- This can be done either locally or on the cloud
+To rollout a trained agent that is stored at 'complex_envs/my_first_agent.pkl' for 9 steps, run the following command from the same folder:
+
 ```
-# Example
-
-# Step 1
-# Step 2
-```
-
-## Serve Model
-- Include instructions of how to set up a REST or RPC endpoint
-- This is for running remote inference via a custom model
-```
-# Example
-
-# Step 1
-# Step 2
-```
-
-## Analysis
-- Include some form of EDA (exploratory data analysis)
-- And/or include benchmarking of the model and results
-```
-# Example
-
-# Step 1
-# Step 2
+$ python rollout.py -n 9 -i my_first_agent.pkl
 ```
