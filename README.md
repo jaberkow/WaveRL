@@ -25,6 +25,7 @@ Installing the necessary C-libraries is easiest with [Homebrew](https://brew.sh/
 ```
 $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
+Then install cmake and openmpi.
 ```
 $ brew install cmake openmpi
 ```
