@@ -18,11 +18,15 @@ Then update and install the following system packages:
 
 ### Ubuntu Instructions:
 ```
-sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev openmpi-bin mpich lam-runtime
+$ sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev openmpi-bin mpich lam-runtime
 ```
 ### Mac OS X Instructions:
+Installing the necessary C-libraries is easiest with [Homebrew](https://brew.sh/), so install this first:
 ```
-brew install cmake openmpi
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+```
+$ brew install cmake openmpi
 ```
 ### Setting up the conda environment
 
