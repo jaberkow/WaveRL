@@ -6,3 +6,14 @@ learning_rate_val: 0.00025
 # Configuration params for the corridor environment
 corridor_length: 10
 
+# Configuration params for the active damping environment
+num_time_points: 20
+time_interval: 0.1
+wave_speed: 1.0
+system_length: 2.0
+num_lattice_points: 10
+num_waves: 6
+min_alpha: -0.5
+max_alpha: 0.5
+min_u: -20
+max_u: 20

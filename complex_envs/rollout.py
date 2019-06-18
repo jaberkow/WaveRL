@@ -18,6 +18,7 @@ from stable_baselines import PPO2
 
 #currently this just loads the simple corridor environment, more will be added later
 from simple_environment import SimpleCorridor
+from active_damping_env import ActiveDamping1D
 
 #other utilities
 import yaml
@@ -30,6 +31,8 @@ if __name__ == '__main__':
         help='The number of rollout steps', default=-1,type=int)
     parser.add_argument('-i', dest='pretrained',
         help='Path to a pretrained agent to rollout',default='', type=str)
+    parser.add_argument('-e',dest='environment_to_use',
+        help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','ActiveDamping1D'],type=str)
     args = parser.parse_args()
     
     #load the config variables, currently assuming the config file is 
@@ -43,8 +46,11 @@ if __name__ == '__main__':
     else:
         rollout_steps = cfg['num_rollout_steps']
 
-    #TODO make this a more general procedure to take in an environment name
-    env = DummyVecEnv([lambda: SimpleCorridor(cfg)])
+    #select the environment
+    if args.environment_to_use=='SimpleCorridor':
+        env=DummyVecEnv([lambda: SimpleCorridor(cfg)])
+    else:
+        env=DummyVecEnv([lambda: ActiveDamping1D(cfg)])
     #Make sure a proper pretrained agent file was passed
     assert args.pretrained.endswith('.pkl') and os.path.isfile(args.pretrained), "The pretrained agent must be a valid path to a .pkl file"
 
