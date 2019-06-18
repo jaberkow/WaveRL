@@ -1,5 +1,5 @@
-# ComplexRL
-A package for training RL agents in complex physical environments
+# WaveRL
+A package for training RL agents to perform active damping on a model of a vibrating bridge.
 
 ## Contents
 * complex_envs/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
@@ -28,8 +28,8 @@ brew install cmake openmpi
 
 Clone the repository and change into the repo folder
 ```
-$ git clone https://github.com/jaberkow/waveRL.git
-$ cd waveRL
+$ git clone https://github.com/jaberkow/WaveRL.git
+$ cd WaveRL
 ```
 Make sure 'install_requirements.sh' has the correct permissions and run it.
 
