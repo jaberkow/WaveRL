@@ -26,9 +26,10 @@ brew install cmake openmpi
 ```
 ### Setting up the conda environment
 
-Clone the repository
+Clone the repository and change into the repo folder
 ```
-$ git clone https://github.com/jaberkow/Insight_Project.git
+$ git clone https://github.com/jaberkow/waveRL.git
+$ cd waveRL
 ```
 Make sure 'install_requirements.sh' has the correct permissions and run it.
 
@@ -46,6 +47,7 @@ $ conda activate baseline_env
 To train an agent for 1000 timesteps and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
 
 ```
+$ cd complex_envs
 $ python train.py -n 1000 -m my_first_agent 
 ```
 This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
