@@ -1,5 +1,5 @@
-# ComplexRL
-A package for training RL agents in complex physical environments
+# WaveRL
+A package for training RL agents to perform active damping on a model of a vibrating bridge.
 
 ## Contents
 * complex_envs/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
@@ -18,17 +18,23 @@ Then update and install the following system packages:
 
 ### Ubuntu Instructions:
 ```
-sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev openmpi-bin mpich lam-runtime
+$ sudo apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev openmpi-bin mpich lam-runtime
 ```
 ### Mac OS X Instructions:
+Installing the necessary C-libraries is easiest with [Homebrew](https://brew.sh/), so install this first:
 ```
-brew install cmake openmpi
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+Then install cmake and openmpi.
+```
+$ brew install cmake openmpi
 ```
 ### Setting up the conda environment
 
-Clone the repository
+Clone the repository and change into the repo folder
 ```
-$ git clone https://github.com/jaberkow/Insight_Project.git
+$ git clone https://github.com/jaberkow/WaveRL.git
+$ cd WaveRL
 ```
 Make sure 'install_requirements.sh' has the correct permissions and run it.
 
@@ -46,6 +52,7 @@ $ conda activate baseline_env
 To train an agent for 1000 timesteps and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
 
 ```
+$ cd complex_envs
 $ python train.py -n 1000 -m my_first_agent 
 ```
 This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
