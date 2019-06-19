@@ -11,9 +11,18 @@ num_time_points: 20
 time_interval: 0.1
 wave_speed: 1.0
 system_length: 2.0
-num_lattice_points: 10
+num_lattice_points: 20
 num_waves: 6
+drive_period: 5
+num_force_points: 3
+#force width is in units of the system length
+
+force_width: 0.05
 min_alpha: -0.5
 max_alpha: 0.5
 min_u: -20
 max_u: 20
+
+#configurationg params for 
+
+
