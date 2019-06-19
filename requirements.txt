@@ -1,0 +1,17 @@
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+ipykernel
+ipython
+jupyter
+jupyter 
+jupyter_client
+jupyter_console  
+jupyter_core  
+psutil
+setproctitle
+tensorflow
+stable-baselines
+pyyaml

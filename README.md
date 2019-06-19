@@ -36,17 +36,19 @@ Clone the repository and change into the repo folder
 $ git clone https://github.com/jaberkow/WaveRL.git
 $ cd WaveRL
 ```
-Make sure 'install_requirements.sh' has the correct permissions and run it.
+
+Make a conda environment and activate it:
 
 ```
-$ chmod 755 install_stable_requirements.sh
-$ ./install_stable_requirements.sh
+$ conda create -n WaveEnv python=3.6
+$ source activate WaveEnv
 ```
-Activate the newly created environment
+Install the packages from `requirements.txt`
 
 ```
-$ conda activate baseline_env
+$ pip install -r requirements.txt
 ```
+
 ## Training an agent
 
 To train an agent for 1000 timesteps and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
