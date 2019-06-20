@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy.integrate import simps
 class Wave1D:
     """
     A utility class for simulating the wave equation in 1 dimension
@@ -180,3 +180,13 @@ class Wave1D:
         observation[0,:,1]=self.u_n
         observation[0,:,2]=self.u_nm1
         return observation
+    def get_loss(self):
+        """
+        Returns the integrated squared magnitude of the system's deviations from zero
+        
+        Outputs:
+            squared_deviation - The integrated value of the squared deviation over the domain,
+                uses simpson's rule
+        """
+        
+        return simps(self.u**2,self.x_mesh)

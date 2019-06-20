@@ -7,6 +7,7 @@ A package for training RL agents to perform active damping on a model of a vibra
 	* rollout.py : This script rolls out a trained agent (see example below)
 	* simple_environment.py :  This in an implementation of the simple corridor environment
 	* finite_diff_wave.py : This is a class definition for a simulator of one dimensional wave equation with finite difference methods.
+	* active_damping_env.py : This is a class definition for the vibrating bridge environment
 * configs/ 
 	* config.yml : This file holds the default parameters for the scripts and environments
 * install_stable_requirements.sh : a shell script for installing all the necessary packages
