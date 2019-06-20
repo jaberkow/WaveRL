@@ -6,6 +6,7 @@ A package for training RL agents to perform active damping on a model of a vibra
 	* train.py :  This script trains an agent (see example below)
 	* rollout.py : This script rolls out a trained agent (see example below)
 	* simple_environment.py :  This in an implementation of the simple corridor environment
+	* finite_diff_wave.py : This is a class definition for a simulator of one dimensional wave equation with finite difference methods.
 * configs/ 
 	* config.yml : This file holds the default parameters for the scripts and environments
 * install_stable_requirements.sh : a shell script for installing all the necessary packages
@@ -41,7 +42,7 @@ Make a conda environment and activate it:
 
 ```
 $ conda create -n WaveEnv python=3.6
-$ source activate WaveEnv
+$ conda activate WaveEnv
 ```
 Install the packages from `requirements.txt`
 

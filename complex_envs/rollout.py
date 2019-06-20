@@ -55,7 +55,7 @@ if __name__ == '__main__':
     assert args.pretrained.endswith('.pkl') and os.path.isfile(args.pretrained), "The pretrained agent must be a valid path to a .pkl file"
 
     #load our trained agent
-    model = PPO2.load(args.pretrained)
+    model = PPO2.load(args.pretrained,env=env)
 
     obs = env.reset()
     for i in range(rollout_steps):
