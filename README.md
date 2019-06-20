@@ -53,11 +53,11 @@ $ pip install -r requirements.txt
 
 ## Training an agent
 
-To train an agent for 1000 timesteps and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
+To train an agent for 1000 timesteps on the vibrating bridge environment and save it as 'my_first_agent.pkl', navigate to the `complex_envs` folder and run the following command:
 
 ```
 $ cd complex_envs
-$ python train.py -n 1000 -m my_first_agent 
+$ python train.py -n 1000 -m my_first_agent -e VibratingBridge
 ```
 This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
 
@@ -69,7 +69,7 @@ $ tensorboard --logdir tensorboard_log/
 To rollout a trained agent that is stored at 'complex_envs/my_first_agent.pkl' for 9 steps, run the following command from the same folder:
 
 ```
-$ python rollout.py -n 9 -i my_first_agent.pkl
+$ python rollout.py -n 9 -i my_first_agent.pkl -e VibratingBridge
 ```
 
 The rollout will be saved in a file format starting with 'output', which can be changed by passing `-f <filename>` to the above command.
