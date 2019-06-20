@@ -21,7 +21,7 @@ from stable_baselines import PPO2
 
 #currently this just loads the simple corridor environment, more will be added later
 from simple_environment import SimpleCorridor
-from active_damping_env import ActiveDamping1D
+from active_damping_env import VibratingBridge
 
 #other utilities
 import yaml
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 	parser.add_argument('-lr',dest='learning_rate_val',
 		help='Overwrite the learning rate',default=-1.0,type=float)
 	parser.add_argument('-e',dest='environment_to_use',
-		help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','ActiveDamping1D'],type=str)
+		help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','VibratingBridge'],type=str)
 	args = parser.parse_args()
 
 	#load the config variables, currently assuming the config file is 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 	if args.environment_to_use=='SimpleCorridor':
 		env=DummyVecEnv([lambda: SimpleCorridor(cfg)])
 	else:
-		env=DummyVecEnv([lambda: ActiveDamping1D(cfg)])
+		env=DummyVecEnv([lambda: VibratingBridge(cfg)])
 	#do we overwrite the learning rate
 	if args.learning_rate_val >0:
 		learning_rate = args.learning_rate_val

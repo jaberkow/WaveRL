@@ -18,7 +18,7 @@ from stable_baselines import PPO2
 
 #currently this just loads the simple corridor environment, more will be added later
 from simple_environment import SimpleCorridor
-from active_damping_env import ActiveDamping1D
+from active_damping_env import VibratingBridge
 
 #other utilities
 import yaml
@@ -32,7 +32,9 @@ if __name__ == '__main__':
     parser.add_argument('-i', dest='pretrained',
         help='Path to a pretrained agent to rollout',default='', type=str)
     parser.add_argument('-e',dest='environment_to_use',
-        help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','ActiveDamping1D'],type=str)
+        help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','VibratingBridge'],type=str)
+    parser.add_argument('-f',dest='output_filename',
+        help='Name of output file',default='output',type=str)
     args = parser.parse_args()
     
     #load the config variables, currently assuming the config file is 
@@ -50,16 +52,16 @@ if __name__ == '__main__':
     if args.environment_to_use=='SimpleCorridor':
         env=DummyVecEnv([lambda: SimpleCorridor(cfg)])
     else:
-        env=DummyVecEnv([lambda: ActiveDamping1D(cfg)])
+        env=DummyVecEnv([lambda: VibratingBridge(cfg)])
     #Make sure a proper pretrained agent file was passed
     assert args.pretrained.endswith('.pkl') and os.path.isfile(args.pretrained), "The pretrained agent must be a valid path to a .pkl file"
 
     #load our trained agent
-    model = PPO2.load(args.pretrained)
+    model = PPO2.load(args.pretrained,env=env)
 
     obs = env.reset()
     for i in range(rollout_steps):
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
         #env.render()
-    env.render(save=True)
+    env.render(fname=args.output_filename)
