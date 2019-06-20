@@ -19,9 +19,9 @@ class SimpleLineViewer:
     This class is for creating simple plots of a one dimensional time series
     """
     def __init__(self):
-        fig = plt.figure()
-        plt.show(block=False)
-    def render(self,trajectory,save=False):
+        
+        pass
+    def render(self,trajectory,fname='output'):
         """
         This method is the actual render operation of the simple corridor class
 
@@ -29,10 +29,10 @@ class SimpleLineViewer:
             trajectory:  Array of shape (num_timesteps,), the agent's trajectory over time
             save: Boolean, whether or not to save the trajectory to a file
         """
-        plt.plot(range(len(trajectory)),trajectory)
-        plt.pause(0.001)
-        if save:
-            plt.savefig('test')
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        ax.plot(range(len(trajectory)),trajectory)
+        fig.savefig(fname)
     def close(self):
         plt.close()
 
@@ -74,11 +74,14 @@ class SimpleCorridor(gym.Env):
         self.trajectory.append(self.cur_pos)
         return [self.cur_pos], 1 if done else 0, done, {}
 
-    def render(self,save=False,mode='human'):
+    def render(self,fname='output',mode='human'):
+        """
+        Saves a png file showing the trajectory of the agent over time
+        """
         if self.viewer == None:
             #Build the viewing object
             self.viewer=SimpleLineViewer()
-        self.viewer.render(self.trajectory,save=save)
+        self.viewer.render(self.trajectory,fname=fname)
     def close(self):
         if self.viewer != None:
             self.viewer.close()

@@ -33,6 +33,8 @@ if __name__ == '__main__':
         help='Path to a pretrained agent to rollout',default='', type=str)
     parser.add_argument('-e',dest='environment_to_use',
         help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','ActiveDamping1D'],type=str)
+    parser.add_argument('-f',dest='output_filename',
+        help='Name of output file',default='output',type=str)
     args = parser.parse_args()
     
     #load the config variables, currently assuming the config file is 
@@ -62,4 +64,4 @@ if __name__ == '__main__':
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
         #env.render()
-    env.render(save=True)
+    env.render(fname=args.output_filename)

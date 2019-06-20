@@ -70,3 +70,6 @@ To rollout a trained agent that is stored at 'complex_envs/my_first_agent.pkl' f
 ```
 $ python rollout.py -n 9 -i my_first_agent.pkl
 ```
+
+The rollout will be saved in a file format starting with 'output', which can be changed by passing `-f <filename>` to the above command.
+
