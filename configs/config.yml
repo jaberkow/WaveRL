@@ -14,7 +14,8 @@ wave_speed: 1.0
 system_length: 2.0
 num_lattice_points: 20
 num_waves: 6
-drive_period: 5
+drive_period: 10
+drive_magnitude: 1.0
 num_warmup_steps: 10
 num_force_points: 3
 

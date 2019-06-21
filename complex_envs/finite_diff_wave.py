@@ -29,6 +29,7 @@ class Wave1D:
         self.Nwaves = config['num_waves'] 
         self.drive_period = config['drive_period']
         self.drive_frequency = 2.0*np.pi/self.drive_period
+        self.drive_magnitude = config['drive_magnitude']
 
         #the lattice spacing
         self.dx = float(self.L)/float(self.Nx)
@@ -105,6 +106,10 @@ class Wave1D:
             frequency = float(wave_num)*np.pi/float(self.L)
             frequency_list.append(frequency)
         self.spatial_freq_array = np.array(frequency_list)
+        spatial_array = np.sum(np.sin(self.x_mesh[:,np.newaxis]*self.spatial_freq_array[np.newaxis,:]),axis=1)
+        spatial_magnitude = np.max(np.abs(spatial_array))
+        self.epsilon = 1.0/float(spatial_magnitude)
+
         
     def driving_force(self,x,t):
         """
@@ -114,7 +119,11 @@ class Wave1D:
             x - a scalar, position in the domain
             t - a scalar, current timestep
         """
-        return np.sin(self.drive_frequency*t)*np.sum(np.sin(x*self.spatial_freq_array))
+
+
+        force_profile = np.sin(self.drive_frequency*t)*np.sum(np.sin(x*self.spatial_freq_array))
+
+        return force_profile/self.epsilon
     
     def single_step(self):
         """
