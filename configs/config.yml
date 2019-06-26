@@ -13,10 +13,8 @@ wave_speed: 1.0
 system_length: 2.0
 num_lattice_points: 20
 
-#parameters of the driving force
-num_waves: 6
-drive_period: 10
-drive_magnitude: 1.0
+#parameters of the warmup force
+drive_magnitude: 2.0
 
 #how many steps to apply random impulses to start vibrating the bridge
 num_warmup_steps: 20
@@ -27,7 +25,7 @@ num_equi_steps: 20
 
 
 timepoints_per_step: 1
-max_steps: 100
+max_steps: 1000
 
 #force width is in units of the system length
 num_force_points: 3

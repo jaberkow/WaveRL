@@ -42,7 +42,9 @@ class VibratingBridge(gym.Env):
         self.timepoints_per_step = config['timepoints_per_step']
         self.max_steps = config['max_steps']
         self.Nx = config['num_lattice_points']
-        
+        self.drive_magnitude = config['drive_magnitude']
+        #load the simulator class, thi is the line to change if you 
+        #use a different method for simulating the dynamics
         self.simulator = fdw.Wave1D(config)
         
         #build up the action space
@@ -74,13 +76,16 @@ class VibratingBridge(gym.Env):
         #use the simulator's reset method, note that this also
         self.simulator.reset()
         
+        #random fixed action to warm up system
+        action = self.action_space.sample()
+        #normalize it to make it larger
+        action_mag = np.sqrt(np.sum(action**2))
+        action *= self.drive_magnitude/action_mag
+        self.simulator.take_in_action(action)
         #run some warmup steps
         for t in range(self.num_warmup_steps):
-            #random actions to warm up system
-            action = self.action_space.sample()
             self.u_traj.append(np.copy(self.simulator.u))
             self.energy_traj.append(self.simulator.energy())
-            self.simulator.take_in_action(action)
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.simulator.single_step()
             self.code_traj.append(0)
