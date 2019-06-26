@@ -37,8 +37,8 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax1 = plt.axes(xlim=(x_min, x_max), ylim=(y_min,y_max))
     line, = ax1.plot([], [], lw=2)
-    plt.xlabel('Bridge Position')
-    plt.ylabel('Height')
+    plt.xlabel('Bridge Position',fontsize=15)
+    plt.ylabel('Height',fontsize=15)
 
     plotlays, plotcols = [3], ["red","black","green"]
     plotlegends = ['bridge','','impulse']
@@ -61,11 +61,11 @@ if __name__ == '__main__':
         xlist = [x_mesh, x_mesh,x_mesh]
         ylist = [u_array[:,i], np.zeros_like(u_array[:,i]),impulse_array[:,i]]
         if code_array[i]==0:
-            plt.title('Step {} (warmup)'.format(int(i)))
+            plt.title('Step {} (warmup)'.format(int(i)),fontsize=15)
         elif code_array[i]==1:
-            plt.title('Step {} (equilibriate)'.format(int(i)))
+            plt.title('Step {} (equilibriate)'.format(int(i)),fontsize=15)
         elif code_array[i]==2:
-            plt.title('Step {} (dampen)'.format(int(i)))
+            plt.title('Step {} (dampen)'.format(int(i)),fontsize=15)
         #for index in range(0,1):
         for lnum,line in enumerate(lines):
             line.set_data(xlist[lnum], ylist[lnum]) # set data for each line separately. 
@@ -108,9 +108,9 @@ if __name__ == '__main__':
     plt.plot(dampen_step,dampen_energy,'b',label='dampen')
 
 
-    plt.legend(loc='upper left')
+    plt.legend(loc='best')
 
     plt.xlabel('step',fontsize=15)
     plt.ylabel('energy',fontsize=15)
-    trend_outname = args.output_prefix + '.eps'
+    trend_outname = args.output_prefix + '.png'
     plt.savefig(trend_outname)
