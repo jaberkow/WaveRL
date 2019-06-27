@@ -16,8 +16,6 @@ from stable_baselines.common.policies import MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import PPO2
 
-#currently this just loads the simple corridor environment, more will be added later
-from simple_environment import SimpleCorridor
 from active_damping_env import VibratingBridge
 
 #other utilities
@@ -48,11 +46,8 @@ if __name__ == '__main__':
     else:
         rollout_steps = cfg['num_rollout_steps']
 
-    #select the environment
-    if args.environment_to_use=='SimpleCorridor':
-        env=DummyVecEnv([lambda: SimpleCorridor(cfg)])
-    else:
-        env=DummyVecEnv([lambda: VibratingBridge(cfg)])
+    #setup the environment
+    env=DummyVecEnv([lambda: VibratingBridge(cfg)])
     #Make sure a proper pretrained agent file was passed
     assert args.pretrained.endswith('.pkl') and os.path.isfile(args.pretrained), "The pretrained agent must be a valid path to a .pkl file"
 

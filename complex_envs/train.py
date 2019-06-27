@@ -19,8 +19,6 @@ from stable_baselines.common.policies import MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import PPO2
 
-#currently this just loads the simple corridor environment, more will be added later
-from simple_environment import SimpleCorridor
 from active_damping_env import VibratingBridge
 
 #other utilities
@@ -49,11 +47,8 @@ if __name__ == '__main__':
 	with open('../configs/config.yml','r') as yamlfile:
 		cfg=yaml.load(yamlfile)
 
-	#select the environment
-	if args.environment_to_use=='SimpleCorridor':
-		env=DummyVecEnv([lambda: SimpleCorridor(cfg)])
-	else:
-		env=DummyVecEnv([lambda: VibratingBridge(cfg)])
+	#setup the environment
+	env=DummyVecEnv([lambda: VibratingBridge(cfg)])
 	#do we overwrite the learning rate
 	if args.learning_rate_val >0:
 		learning_rate = args.learning_rate_val

@@ -31,21 +31,24 @@ class VibratingBridge(gym.Env):
             config:  A dict containing parameters for the system
         """
         
-        self.num_warmup_step = config['num_warmup_steps']
+        self.num_warmup_steps = config['num_warmup_steps']
+        self.num_equi_steps = config['num_equi_steps']
         self.num_force_points = config['num_force_points']
-        self.min_alpha = config['min_alpha']
-        self.max_alpha = config['max_alpha']
+        self.min_force = config['min_force']
+        self.max_force = config['max_force']
         self.min_u = config['min_u']
         self.max_u = config['max_u']
         #how many steps of the dynamics to run in one step of the environment
         self.timepoints_per_step = config['timepoints_per_step']
         self.max_steps = config['max_steps']
         self.Nx = config['num_lattice_points']
-        
+        self.drive_magnitude = config['drive_magnitude']
+        #load the simulator class, thi is the line to change if you 
+        #use a different method for simulating the dynamics
         self.simulator = fdw.Wave1D(config)
         
         #build up the action space
-        self.action_space = Box(low=self.min_alpha,high=self.max_alpha,
+        self.action_space = Box(low=self.min_force,high=self.max_force,
                                 shape=(self.num_force_points,),dtype=np.float32)
         #build up the observation space
         self.observation_space = Box(low=self.min_u,high=self.max_u,
@@ -54,6 +57,8 @@ class VibratingBridge(gym.Env):
         #allocate for trajectories
         self.u_traj = []
         self.impulse_traj = []
+        self.energy_traj = []
+        self.code_traj = []
         self.reset()
 
     def reset(self):
@@ -66,13 +71,35 @@ class VibratingBridge(gym.Env):
         #clear out cache of trajectories
         self.u_traj = []
         self.impulse_traj = []
+        self.energy_traj = []
+        self.code_traj = [] #for rendering functions to track stage of simulation
         #use the simulator's reset method, note that this also
-        #resets the driving force
         self.simulator.reset()
         
+        #random fixed action to warm up system
+        action = self.action_space.sample()
+        #normalize it to make it larger
+        action_mag = np.sqrt(np.sum(action**2))
+        action *= self.drive_magnitude/action_mag
+        self.simulator.take_in_action(action)
         #run some warmup steps
-        for t in range(self.num_warmup_step):
+        for t in range(self.num_warmup_steps):
+            self.u_traj.append(np.copy(self.simulator.u))
+            self.energy_traj.append(self.simulator.energy())
+            self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.simulator.single_step()
+            self.code_traj.append(0)
+        
+        #don't perturb system, let it equilibriate
+        empty_action = 0.0*self.action_space.sample()
+        self.simulator.take_in_action(empty_action)
+        for t in range(self.num_equi_steps):
+            self.u_traj.append(np.copy(self.simulator.u))
+            self.energy_traj.append(self.simulator.energy())
+            self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
+            self.simulator.single_step()
+            self.code_traj.append(1)
+        
 
         observation = self.simulator.get_observation()
         return observation
@@ -86,17 +113,23 @@ class VibratingBridge(gym.Env):
         #first we update the simulator's impulse profile using the action
         self.simulator.take_in_action(action)
         
-        reward = 0
+        #take in energy before running dynamics
+        starting_energy = self.simulator.energy()
         
         #run the dynamics with the fixed impulse for a fixed number of timepoints
         for t in range(self.timepoints_per_step):
             self.simulator.single_step()
+            #record things
+            self.energy_traj.append(self.simulator.energy())
             self.u_traj.append(np.copy(self.simulator.u))
-            self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile(action)))
-            #accumulate a reward
-            reward -= self.simulator.get_loss()
-            
-            
+            self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
+            self.code_traj.append(2)
+        
+        #take in energy after runing dynamics
+        ending_energy = self.simulator.energy()
+        
+        #reward is positive if energy is reduced
+        reward = starting_energy - ending_energy
         
         observation = self.simulator.get_observation()
         #properly bound the observation
@@ -118,7 +151,11 @@ class VibratingBridge(gym.Env):
         
         u_array = np.stack(self.u_traj,axis=1)
         impulse_array = np.stack(self.impulse_traj,axis=1)
-        np.savez(fname,u_array=u_array,impulse_array=impulse_array,x_mesh=self.simulator.x_mesh)
+        energy_array = np.array(self.energy_traj)
+        code_array = np.array(self.code_traj,dtype=np.int32)
+        np.savez(fname,u_array=u_array,impulse_array=impulse_array,
+                 energy_array=energy_array,code_array=code_array,
+                 x_mesh=self.simulator.x_mesh)
 
 
 

@@ -1,33 +1,42 @@
 # general params for training
-num_learning_steps: 1000
-num_rollout_steps: 10
+num_learning_steps: 40000
+num_rollout_steps: 100
 learning_rate_val: 0.00025
 
 # Configuration params for the corridor environment
 corridor_length: 10
 
 # Configuration params for the active damping environment
-num_time_points: 20
 
 time_interval: 0.1
 wave_speed: 1.0
 system_length: 2.0
 num_lattice_points: 20
-num_waves: 6
-drive_period: 5
-num_warmup_steps: 10
-num_force_points: 3
 
-timepoints_per_step: 5
-max_steps: 100
+#parameters of the warmup force
+drive_magnitude: 2.0
+
+#how many steps to apply random impulses to start vibrating the bridge
+num_warmup_steps: 20
+#how many steps to allow the the bridge to equilibriate after warmup
+num_equi_steps: 20
+
+
+
+
+timepoints_per_step: 1
+max_steps: 1000
 
 #force width is in units of the system length
-
+num_force_points: 3
 force_width: 0.05
-min_alpha: -0.5
-max_alpha: 0.5
+min_force: -1.0
+max_force: 1.0
 min_u: -20
 max_u: 20
+
+
+
 
 
 
