@@ -19,8 +19,12 @@ class VibratingBridge(gym.Env):
     a an oscillating bridge modeled with the one dimensional wave equation with 
     endpoints fixed at zero.
 
-    Active damping is modeled as pistons at points along the interior of the bridge
-    applying localized impulse forces
+    The goal of active damping is to apply external forces to a oscillating system
+    to cancel out the oscillations and bring the system to rest.
+
+    The forces are modeled as pistons at points along the interior of the bridge
+    applying localized impulse forces.  Actions in this environment are equivalent
+    to setting the forces of these pistons.
     """
 
     def __init__(self,config):
@@ -28,7 +32,23 @@ class VibratingBridge(gym.Env):
         Constructor for the VibratingBridge OpenAI gym
 
         Inputs:
-            config:  A dict containing parameters for the system
+            config:  A dict containing parameters for the system, which must have the following keys:
+
+            num_warmup_steps: (int > 0)
+            num_equi_steps: (int > 0)
+            num_force_points: (int > 0)
+            min_force: (float) the maximum value of the applied forces
+            max_force: (float) the minimum value of the applied forces
+            min_u: (float) upper bound of system's deviation
+            max_u: (float) lower bound of system's deviation
+            timepoints_per_step: (int > 0) how many steps of the system dynamics to take per step of the
+                environment
+            max_steps:  maximum number of environments steps to take before ending episode
+            num_lattice_points: (int > 0) how many discrete points along the length of the system to use for
+                the finite difference scheme
+            drive_magnitude: The L2 magnitude of the drivinge force of the warmup period
+
+
         """
         
         self.num_warmup_steps = config['num_warmup_steps']
@@ -38,23 +58,23 @@ class VibratingBridge(gym.Env):
         self.max_force = config['max_force']
         self.min_u = config['min_u']
         self.max_u = config['max_u']
-        #how many steps of the dynamics to run in one step of the environment
+        # How many steps of the dynamics to run in one step of the environment
         self.timepoints_per_step = config['timepoints_per_step']
         self.max_steps = config['max_steps']
         self.Nx = config['num_lattice_points']
         self.drive_magnitude = config['drive_magnitude']
-        #load the simulator class, thi is the line to change if you 
-        #use a different method for simulating the dynamics
+        # Load the simulator class, thi is the line to change if you 
+        # use a different method for simulating the dynamics
         self.simulator = fdw.Wave1D(config)
         
-        #build up the action space
+        # Build up the action space
         self.action_space = Box(low=self.min_force,high=self.max_force,
                                 shape=(self.num_force_points,),dtype=np.float32)
-        #build up the observation space
+        # Build up the observation space
         self.observation_space = Box(low=self.min_u,high=self.max_u,
                                      shape=(1,self.Nx+1,3),dtype=np.float32)
         
-        #allocate for trajectories
+        # Allocate for trajectories
         self.u_traj = []
         self.impulse_traj = []
         self.energy_traj = []
@@ -66,23 +86,23 @@ class VibratingBridge(gym.Env):
         This resets the state of the system.
 
         """
-        #reset the step_number
+        # Reset the step_number
         self.step_number = 0
-        #clear out cache of trajectories
+        # Clear out cache of trajectories
         self.u_traj = []
         self.impulse_traj = []
         self.energy_traj = []
-        self.code_traj = [] #for rendering functions to track stage of simulation
-        #use the simulator's reset method, note that this also
+        self.code_traj = [] # For rendering functions to track stage of simulation
+        # Use the simulator's reset method, note that this also
         self.simulator.reset()
         
-        #random fixed action to warm up system
+        # Random fixed action to warm up system
         action = self.action_space.sample()
-        #normalize it to make it larger
+        # Normalize it to make it larger
         action_mag = np.sqrt(np.sum(action**2))
         action *= self.drive_magnitude/action_mag
         self.simulator.take_in_action(action)
-        #run some warmup steps
+        # Run some warmup steps
         for t in range(self.num_warmup_steps):
             self.u_traj.append(np.copy(self.simulator.u))
             self.energy_traj.append(self.simulator.energy())
@@ -90,7 +110,7 @@ class VibratingBridge(gym.Env):
             self.simulator.single_step()
             self.code_traj.append(0)
         
-        #don't perturb system, let it equilibriate
+        # Don't perturb system, let it equilibriate
         empty_action = 0.0*self.action_space.sample()
         self.simulator.take_in_action(empty_action)
         for t in range(self.num_equi_steps):
@@ -110,32 +130,32 @@ class VibratingBridge(gym.Env):
         we parameterize the impulse using parameters from action
         """
         
-        #first we update the simulator's impulse profile using the action
+        # First we update the simulator's impulse profile using the action
         self.simulator.take_in_action(action)
         
-        #take in energy before running dynamics
+        # Take in energy before running dynamics
         starting_energy = self.simulator.energy()
         
-        #run the dynamics with the fixed impulse for a fixed number of timepoints
+        # Run the dynamics with the fixed impulse for a fixed number of timepoints
         for t in range(self.timepoints_per_step):
             self.simulator.single_step()
-            #record things
+            # Record things
             self.energy_traj.append(self.simulator.energy())
             self.u_traj.append(np.copy(self.simulator.u))
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.code_traj.append(2)
         
-        #take in energy after runing dynamics
+        # Take in energy after runing dynamics
         ending_energy = self.simulator.energy()
         
-        #reward is positive if energy is reduced
+        # Reward is positive if energy is reduced
         reward = starting_energy - ending_energy
         
         observation = self.simulator.get_observation()
-        #properly bound the observation
+        # Properly bound the observation
         clipped_observation = np.clip(observation,self.min_u,self.max_u)
         
-        #update step number and check to see if epoch is over
+        # Update step number and check to see if epoch is over
         self.step_number += 1
         if self.step_number >= self.max_steps:
             done = True

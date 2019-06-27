@@ -1,3 +1,14 @@
+"""
+This script visualizes a rollout of an agent
+
+Currently it takes in several command line arguments:
+
+-i:  A path to the npz file recording the rollout
+-f:  A path specifying the filenames of the visualization files
+
+It produces a gif animating the bridge and applied forces, and a plot of the energy value over time.
+"""
+
 import numpy as np
 from scipy.integrate import simps
 import matplotlib.pyplot as plt
@@ -16,17 +27,18 @@ if __name__ == '__main__':
         help='Output visualization filenames start with this',default='output',type=str)
     args = parser.parse_args()
 
-    #load in the numpy data
+    # Load in the numpy data
     data = np.load(args.rollout_file)
 
-    #unpack the data
+    # Unpack the data
     u_array = data['u_array']
     impulse_array = data['impulse_array']
     energy_array = data['energy_array']
     x_mesh = data['x_mesh']
     code_array = data['code_array']
 
-    #animation of demo
+    # Animation of demo
+    # This animation method follows https://matplotlib.org/3.1.0/api/animation_api.html
     x_min = x_mesh[0]
     x_max = x_mesh[-1]
 
@@ -72,7 +84,7 @@ if __name__ == '__main__':
 
         return lines
 
-    # call the animator.  blit=True means only re-draw the parts that have changed.
+    # Call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                    frames=frame_num,interval=100, blit=True)
 
@@ -81,7 +93,7 @@ if __name__ == '__main__':
     anim_outname = args.output_prefix + '.gif'
     anim.save(anim_outname, writer=writer)
     plt.clf()
-    #plot a graph of the energy over the episode
+    # Plot a graph of the energy over the episode
 
     warmup_energy = []
     warmup_step = []

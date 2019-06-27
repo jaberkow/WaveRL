@@ -57,11 +57,11 @@ This package simulates an oscillating bridge by modelling it with the one-dimens
 
 ## Training an agent
 
-To train an agent for 1000 timesteps on the vibrating bridge environment and save it as `my_first_agent.pkl`, navigate to the `complex_envs` folder and run the following command:
+To train an agent for 40,000 timesteps on the vibrating bridge environment and save it as `my_first_agent.pkl`, navigate to the `complex_envs` folder and run the following command:
 
 ```
 $ cd complex_envs
-$ python train.py -n 1000 -m my_first_agent
+$ python train.py -n 40000 -m my_first_agent
 ```
 This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
 
@@ -86,6 +86,6 @@ To visualize a rollout saved in `complex_envs/output.npz`, run the following com
 # python visualize.py -i output.npz -f first_output
 ```
 
-This will produce two files `first_output.eps` which plots the trajectory of the energy over the episode and `first_output.gif` which is an animation of the bridge and the impulse force.
+This will produce two files `first_output.png` which plots the trajectory of the energy over the episode and `first_output.gif` which is an animation of the bridge and the impulse force.
 
 

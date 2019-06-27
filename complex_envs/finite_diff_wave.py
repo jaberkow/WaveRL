@@ -2,53 +2,61 @@ import numpy as np
 from scipy.integrate import simps
 class Wave1D:
     """
-    A utility class for simulating the wave equation in 1 dimension
+    A utility class for simulating the wave equation in 1 dimension using a finite difference
     """
     def __init__(self,config):
         """
         Constructor 1 dimensional wave system
 
         Inputs:
-            config:  A dict containing parameters for the system
+            config:  A dict containing parameters for the system, which must have the following keys:
+
+            time_interval:  (float > 0) the temporal interval between time steps
+            wave_speed: (float > 0) the speed of standing waves on the bridge, related to material tension
+            system_length: (float > 0) the lengthe of the system
+            num_lattice_points: (int > 0) how many discrete points along the length of the system to use for
+                the finite difference scheme
+            num_force_points: (int > 0) how many pistons the system has
+            force_width: (int > 0) how wide the gaussian spread of each piston is
+
         """
         
         self.dt = config['time_interval']
         self.c_speed = config['wave_speed']
         self.L = config['system_length']
         self.Nx = config['num_lattice_points']
-        #how many points along the domain can impulse force be applied
+        # How many points along the domain can impulse force be applied
         self.num_force_points = config['num_force_points']
-        #set the locations of the force application
+        # Set the locations of the force application
         self.force_locations = np.linspace(0.0,self.L,self.num_force_points+2)[1:self.num_force_points+1]
-        #how wide is the profile of each impulse force, must be > 0
+        # How wide is the profile of each impulse force, must be > 0
         self.force_width = config['force_width']
-        #scale the force width by system length
+        # Scale the force width by system length
         self.force_width *= self.L
 
-        #the lattice spacing
+        # The lattice spacing
         self.dx = float(self.L)/float(self.Nx)
 
-        #Mesh points in space
+        # Mesh points in space
         self.x_mesh = np.linspace(0.0,self.L,self.Nx+1)
         
-        #the courant number
+        # The courant number
         self.C = self.c_speed *self.dt/self.dx
         self.C2 = self.C**2 #helper number
 
-        #recalibrate the resolutions to account for rounding
+        # Recalibrate the resolutions to account for rounding
         self.dx = self.x_mesh[1] - self.x_mesh[0]
         
-        #We set up the conditions of the system before warmup period
+        # We set up the conditions of the system before warmup period
 
-        #The system is always initially at rest
+        # The system is always initially at rest
         self.V = lambda x: 0
         
-        #we assume the system starts completely flat
-        #TODO: generalize this
+        # We assume the system starts completely flat
         self.I = lambda x: 0
         
 
-        #allocate memory for the recursive solution arrays
+        # Allocate memory for the recursive solution arrays
         self.u     = np.zeros(self.Nx + 1)   # Solution array at new time level
         self.u_n   = np.zeros(self.Nx + 1)   # Solution at 1 time level back
         self.u_nm1 = np.zeros(self.Nx + 1)   # Solution at 2 time levels back
@@ -62,28 +70,27 @@ class Wave1D:
         """
         Resets the state of the wave system
         """
-        #we reset the time and step index
+        # We reset the time and step index
         self.t = 0
         self.n = 0
         
-        #we set the force vals to zero
+        # We set the force vals to zero
         self.force_vals = np.zeros(self.num_force_points)
         
         
-        #we set the initial condition of the solution 1 time level back
+        # We set the initial condition of the solution 1 time level back
         for i in range(0,self.Nx+1):
             self.u_n[i]=self.I(self.x_mesh[i])
         
-        #We do a special first step for the finite difference scheme
-        #note that the source term is just the driving force for now
+        # We do a special first step for the finite difference scheme
         for i in range(1,self.Nx):
             self.u[i] =self.u_n[i] + self.dt*self.V(self.x_mesh[i])
             self.u[i]+=0.5*self.C2*(self.u_n[i-1] - 2*self.u_n[i] + self.u_n[i+1])
             self.u[i]+=0.5*(self.dt**2)*self.impulse_term(self.x_mesh[i])
-        #force boundary conditions
+        # Force boundary conditions
         self.u[0]=0
         self.u[self.Nx]=0
-        #switch solution steps
+        # Switch solution steps
         self.u_nm1[:] = self.u_n
         self.u_n[:] = self.u
     
@@ -98,11 +105,11 @@ class Wave1D:
             self.u[i] = -self.u_nm1[i] + 2*self.u_n[i] 
             self.u[i] += self.C2*(self.u_n[i-1] - 2*self.u_n[i] + self.u_n[i+1]) 
             self.u[i] += (self.dt**2)*self.impulse_term(self.x_mesh[i])
-        #force boundary conditions
+        # Force boundary conditions
         self.u[0] = 0  
         self.u[self.Nx] = 0
 
-        #switch solution steps
+        # Switch solution steps
         self.u_nm1[:] = self.u_n
         self.u_n[:] = self.u
     
@@ -172,5 +179,5 @@ class Wave1D:
         
         space_term = -self.u*np.gradient(dudx,self.x_mesh) #alternative tension energy
         energy_density = dudt**2 + (self.C**2)*(dudx**2)
-        #energy_density = dudt**2 + (self.c_speed**2)*space_term
+        # Energy_density = dudt**2 + (self.c_speed**2)*space_term
         return 0.5*simps(energy_density,self.x_mesh)
