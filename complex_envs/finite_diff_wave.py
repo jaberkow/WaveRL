@@ -174,10 +174,11 @@ class Wave1D:
         See http://web.math.ucsb.edu/~grigoryan/124A/lecs/lec7.pdf for details
         """
 
-        dudt = (self.u-self.u_nm1)/self.dt #time derivative
-        dudx = np.gradient(self.u,self.x_mesh) #space derivative
+        dudt = (self.u-self.u_nm1)/self.dt # Time derivative
+        dudx = np.gradient(self.u,self.x_mesh) # Space derivative
         
-        space_term = -self.u*np.gradient(dudx,self.x_mesh) #alternative tension energy
+        space_term = -self.u*np.gradient(dudx,self.x_mesh) # Alternative tension energy
         energy_density = dudt**2 + (self.C**2)*(dudx**2)
+        energy_density += self.u**2 # Regularize with L2 norm
         # Energy_density = dudt**2 + (self.c_speed**2)*space_term
         return 0.5*simps(energy_density,self.x_mesh)
