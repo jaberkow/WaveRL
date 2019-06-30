@@ -19,8 +19,6 @@ num_warmup_steps: 20
 num_equi_steps: 20
 
 
-
-
 timepoints_per_step: 1
 max_steps: 1000
 

@@ -1,5 +1,5 @@
 # WaveRL
-A package for training RL agents to perform active damping on a model of a oscillating bridge.
+A package for training RL agents to perform active damping on a model of a vibrating bridge.
 
 ## Contents
 * complex_envs/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
