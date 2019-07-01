@@ -30,6 +30,7 @@ class ConfigFileTestCase(unittest.TestCase):
             'Number of rollout steps must be an integer')
         self.assertTrue(self.cfg['num_rollout_steps']>0,'Number of learning steps must be greater than zero')
         self.assertTrue(self.cfg['learning_rate_val']>0,'Learning rate must be > 0')
+
     def test_environment_parameters(self):
         """
         Tests to make sure the parameters of the vibrating bridge environment are valid
@@ -54,20 +55,7 @@ class ConfigFileTestCase(unittest.TestCase):
             self.assertIsInstance(self.cfg[param],int,error_string)
 
 
-        """
-        self.assertTrue(self.cfg['time_interval']>0,'time interval must be > 0')
-        self.assertTrue(self.cfg['wave_speed']>0,'wave speed must be > 0')
-        self.assertTrue(self.cfg['system_length']>0,'system length must be > 0')
-        self.assertIsInstance(self.cfg['num_lattice_points'],int,'must have integer number of lattice points')
-        self.assertTrue(self.cfg['num_lattice_points']>0,'number of lattice points must be > 0')
-        self.assertTrue(self.cfg['drive_magnitude']>0,'drive magnitude must be > 0')
-        self.assertIsInstance(self.cfg['num_warmup_steps'],int,'must have integer number of warmup steps')
-        self.assertTrue(self.cfg['num_warmup_steps']>0,'number of warmup steps must be > 0')
-        self.assertIsInstance(self.cfg['num_equi_steps'],int,'must have integer number of equilibriation steps')
-        self.assertTrue(self.cfg['num_equi_steps']>0,'number of equilibriation steps must be > 0')
-        self.assertIsInstance(self.cfg['timepoints_per_step'],int,'must have integer number of timepoints per step')
-        self.assertTrue(self.cfg['timepoints_per_step']>0,'number of timepoints per step must be > 0')
-        """
+        
 if __name__ == '__main__':
     unittest.main()
         

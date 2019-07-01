@@ -10,7 +10,7 @@ time_interval: 0.1
 wave_speed: 1.0
 
 system_length: 2.0
-# Actually how many subintervals to dive the system into
+# Actually how many subintervals to divide the system into
 num_lattice_points: 20
 
 # Parameters of the warmup force
