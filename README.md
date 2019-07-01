@@ -11,6 +11,8 @@ A package for training RL agents to perform active damping on a model of a vibra
 		* active_damping_env.py : This is a class definition for an OpenAI gym environment simulating an oscillating bridge
 * configs/ 
 	* config.yml : This file holds the default parameters for the scripts and environments
+* tests/
+	* config_test.py :  A unnittest test fixture that can be used to make sure `configs/config.yml` has all the appropriate keys and valid parameter settings
 * trained_agents/ : A folder for storing trained agents
 * rollouts/ : A folder for storing rollouts of trained agents
 * install_stable_requirements.sh : a shell script for installing all the necessary packages
@@ -53,6 +55,14 @@ Install the packages from `requirements.txt`
 ```
 $ pip install -r requirements.txt
 ```
+### Tests
+
+If any changes are made to the default values in `configs/config.yml` , run the following command
+
+```
+python tests/config_test.py
+```
+To make sure that all the parameter values are valid.
 
 ## About the environment
 
