@@ -9,7 +9,8 @@ Currently it takes in several command line arguments:
 
 It then builds the environment, policy network, rolls out the agent and records the rollout in npz file.
 """
-
+import sys
+sys.path.append('..')
 import gym
 
 # Load the stable_baselines functions
@@ -17,7 +18,7 @@ from stable_baselines.common.policies import MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import PPO2
 
-from active_damping_env import VibratingBridge
+from environments.active_damping_env import VibratingBridge
 
 # Other utilities
 import yaml
@@ -34,10 +35,11 @@ if __name__ == '__main__':
         help='Name of output file',default='output',type=str)
     args = parser.parse_args()
     
-    # Load the config variables, currently assuming the config file is 
-    # in a fixed relative path to this script
-    with open('../configs/config.yml','r') as yamlfile:
-        cfg=yaml.load(yamlfile)
+    # Make sure we find where the config file is
+    CWD_PATH = os.getcwd()
+    config_path = os.path.join(CWD_PATH,'configs/config.yml')
+    with open(config_path, 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
 
     # Check if we override the number of rollout steps
     if args.num_rollout_steps >0:

@@ -8,7 +8,8 @@ Currently it takes in several command line arguments:
 
 It produces a gif animating the bridge and applied forces, and a plot of the energy value over time.
 """
-
+import sys
+sys.path.append('..')
 import numpy as np
 from scipy.integrate import simps
 import matplotlib.pyplot as plt
