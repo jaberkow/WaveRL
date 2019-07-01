@@ -2,14 +2,17 @@
 A package for training RL agents to perform active damping on a model of a vibrating bridge.
 
 ## Contents
-* complex_envs/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
+* src/ :  This folder contains the code for the environments as well as scripts for training and rolling out agents
 	* train.py :  This script trains an agent (see example below)
 	* rollout.py : This script rolls out a trained agent (see example below)
 	* visualize.py : This script produces visualizations of a rolled out agent (see example below)
-	* finite_diff_wave.py : This is a class definition for a simulator of one dimensional wave equation with finite difference methods.
-	* active_damping_env.py : This is a class definition for an OpenAI gym environment simulating an oscillating bridge
+	* environments/ : This folder contains code for the environments.
+		* finite_diff_wave.py : This is a class definition for a simulator of one dimensional wave equation with finite difference methods.
+		* active_damping_env.py : This is a class definition for an OpenAI gym environment simulating an oscillating bridge
 * configs/ 
 	* config.yml : This file holds the default parameters for the scripts and environments
+* trained_agents/ : A folder for storing trained agents
+* rollouts/ : A folder for storing rollouts of trained agents
 * install_stable_requirements.sh : a shell script for installing all the necessary packages
 * conda_requirements_baseline.yaml : A specification of the conda environment
 
@@ -57,33 +60,32 @@ This package simulates an oscillating bridge by modelling it with the one-dimens
 
 ## Training an agent
 
-To train an agent for 40,000 timesteps on the vibrating bridge environment and save it as `my_first_agent.pkl`, navigate to the `complex_envs` folder and run the following command:
+To train an agent for 40,000 timesteps on the vibrating bridge environment and save it as `trained_agents/my_first_agent.pkl`, run the following command:
 
 ```
-$ cd complex_envs
-$ python train.py -n 40000 -m my_first_agent
+$ python src/train.py -n 40000 -m trained_agents/my_first_agent
 ```
-This command will also produce a TensorBoard folder at `./tensorboard_log` that can be visualized with
+This command will also produce a TensorBoard folder at `/tensorboard_log` that can be visualized by running the following command from the same directory
 
 ```
 $ tensorboard --logdir tensorboard_log/
 ```
 ## Rolling out a trained agent
 
-To rollout a trained agent that is stored at `complex_envs/my_first_agent.pkl` for 60 steps, run the following command from the same folder:
+To rollout a trained agent that is stored at `trained_agents/my_first_agent.pkl` for 60 steps, run the following command:
 
 ```
-$ python rollout.py -n 60 -i my_first_agent.pkl
+$ python src/rollout.py -n 60 -i trained_agents/my_first_agent.pkl -f rollouts/output.npz
 ```
 
-The rollout will be saved as `output.npz`, which can be changed by passing `-f <filename>` to the above command.  Note that the trajectories produced will have length equal to the number of rollout steps + the number of warmup steps + the number of equilibriation steps (values of which are set in `/configs/config.yml`).
+The rollout will be saved as `rollouts/output.npz`, which can be changed by passing `-f <filename>` to the above command.  Note that the trajectories produced will have length equal to the number of rollout steps + the number of warmup steps + the number of equilibriation steps (values of which are set in `/configs/config.yml`).
 
 ### Visualizing a rollout
 
-To visualize a rollout saved in `complex_envs/output.npz`, run the following command from the same folder:
+To visualize a rollout saved in `rollouts/output.npz`, run the following command:
 
 ```
-# python visualize.py -i output.npz -f first_output
+# python src/visualize.py -i rollouts/output.npz -f rollouts/first_output
 ```
 
 This will produce two files `first_output.png` which plots the trajectory of the energy over the episode and `first_output.gif` which is an animation of the bridge and the impulse force.
