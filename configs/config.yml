@@ -1,13 +1,16 @@
-# General params for training
+# General params for training and rolling out
 num_learning_steps: 40000
 num_rollout_steps: 100
 learning_rate_val: 0.00025
 
 # Configuration params for the active damping environment
-
+# The time interval between steps of the dynamics
 time_interval: 0.1
+# Speed of waves in the medium, higher value means a stiffer bridge
 wave_speed: 1.0
+
 system_length: 2.0
+# Actually how many subintervals to dive the system into
 num_lattice_points: 20
 
 # Parameters of the warmup force
@@ -18,16 +21,20 @@ num_warmup_steps: 20
 # How many steps to allow the the bridge to equilibriate after warmup
 num_equi_steps: 20
 
-
+# How many steps of the dynamics to run per step of the environment,
+# With a fixed value of the action
 timepoints_per_step: 1
+# Maximum steps to let the environment run
 max_steps: 1000
 
 # How many pistons, will spread uniformly on bridge interior
 num_force_points: 3
 # Force width is in units of the system length
 force_width: 0.05
+# Set the range of the action space
 min_force: -1.0
 max_force: 1.0
+# Set the observable range of the observation space
 min_u: -20
 max_u: 20
 
