@@ -11,17 +11,18 @@ Currently it takes in several command line arguments:
 
 It then builds the environment, policy network, trains the agent, and saves the trained model.
 """
-
+import sys
+sys.path.append('..')
 import gym
 
-#load the stable_baselines functions
+# Load the stable_baselines functions
 from stable_baselines.common.policies import MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import PPO2
 
-from active_damping_env import VibratingBridge
+from environments.active_damping_env import VibratingBridge
 
-#other utilities
+# Other utilities
 import yaml
 import argparse
 import os
@@ -35,41 +36,40 @@ if __name__ == '__main__':
 	parser.add_argument('-i', dest='pretrained',
 		help='Path to a pretrained agent to continue training',default='', type=str)
 	parser.add_argument('-m',dest='model_name',
-		help='Save the trained model here',default='trained_model',type=str)
+		help='Save the trained model here',default='trained_agents/trained_model',type=str)
 	parser.add_argument('-lr',dest='learning_rate_val',
 		help='Overwrite the learning rate',default=-1.0,type=float)
-	parser.add_argument('-e',dest='environment_to_use',
-		help='Which environment to use',default='SimpleCorridor',choices=['SimpleCorridor','VibratingBridge'],type=str)
 	args = parser.parse_args()
 
-	#load the config variables, currently assuming the config file is 
-	#in a fixed relative path to this script
-	with open('../configs/config.yml','r') as yamlfile:
-		cfg=yaml.load(yamlfile)
+	# Make sure we find where the config file is
+	CWD_PATH = os.getcwd()
+	config_path = os.path.join(CWD_PATH,'configs/config.yml')
+	with open(config_path, 'r') as ymlfile:
+		cfg = yaml.load(ymlfile)
 
-	#setup the environment
+	# Setup the environment
 	env=DummyVecEnv([lambda: VibratingBridge(cfg)])
-	#do we overwrite the learning rate
+	# Do we overwrite the learning rate
 	if args.learning_rate_val >0:
 		learning_rate = args.learning_rate_val
 	else:
 		learning_rate = cfg['learning_rate_val']
 
-	#if we're using pretrained model make sure it's in the right format
+	# If we're using pretrained model make sure it's in the right format
 	if args.pretrained !='':
 		assert args.pretrained.endswith('.pkl') and os.path.isfile(args.pretrained), "The pretrained agent must be a valid path to a .pkl file"
 		if args.pretrained.endswith('.pkl') and os.path.isfile(args.pretrained):
 			model = PPO2.load(args.pretrained,env=env,verbose=1,tensorboard_log=args.tensorboard_log_dir)
 	else:
-		model = PPO2(MlpPolicy, env=env, verbose=1,tensorboard_log=args.tensorboard_log_dir,learning_rate=learning_rate)
+		model = PPO2(MlpPolicy, env=env, verbose=0,tensorboard_log=args.tensorboard_log_dir,learning_rate=learning_rate)
 
-	#set the number of training steps
+	# Set the number of training steps
 	if args.num_learning_steps >0:
 		steps_to_train = args.num_learning_steps
 	else:
 		steps_to_train = cfg['num_learning_steps']
-	model.learn(total_timesteps=steps_to_train) #train the model
-	model.save(args.model_name) #save the model
+	model.learn(total_timesteps=steps_to_train) # Train the model
+	model.save(args.model_name) # Save the model
 
 
 
