@@ -32,7 +32,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', dest='pretrained',
         help='Path to a pretrained agent to rollout',default='', type=str)
     parser.add_argument('-f',dest='output_filename',
-        help='Name of output file',default='output',type=str)
+        help='Name of output file',default='rollouts/output',type=str)
     args = parser.parse_args()
     
     # Make sure we find where the config file is

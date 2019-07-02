@@ -36,7 +36,7 @@ if __name__ == '__main__':
 	parser.add_argument('-i', dest='pretrained',
 		help='Path to a pretrained agent to continue training',default='', type=str)
 	parser.add_argument('-m',dest='model_name',
-		help='Save the trained model here',default='trained_model',type=str)
+		help='Save the trained model here',default='trained_agents/trained_model',type=str)
 	parser.add_argument('-lr',dest='learning_rate_val',
 		help='Overwrite the learning rate',default=-1.0,type=float)
 	args = parser.parse_args()

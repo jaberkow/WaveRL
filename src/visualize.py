@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', dest='rollout_file',
         help='Path to the npz outputfile of a rollout',default='', type=str)
     parser.add_argument('-f',dest='output_prefix',
-        help='Output visualization filenames start with this',default='output',type=str)
+        help='Output visualization filenames start with this',default='rollouts/output',type=str)
     args = parser.parse_args()
 
     # Load in the numpy data

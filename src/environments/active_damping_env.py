@@ -113,12 +113,20 @@ class VibratingBridge(gym.Env):
         # Don't perturb system, let it equilibriate
         empty_action = 0.0*self.action_space.sample()
         self.simulator.take_in_action(empty_action)
+        # equi_energy will be used for instance normalization
+        self.equi_energy = 0
         for t in range(self.num_equi_steps):
             self.u_traj.append(np.copy(self.simulator.u))
             self.energy_traj.append(self.simulator.energy())
+            self.equi_energy += self.simulator.energy()
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.simulator.single_step()
             self.code_traj.append(1)
+        # Divide equi_energy by num_equi_steps
+        self.equi_energy /= self.num_equi_steps
+        # Normalize the current energy_trajectory
+        for i in range(len(self.energy_traj)):
+            self.energy_traj[i] /= self.equi_energy
         
 
         observation = self.simulator.get_observation()
@@ -134,19 +142,19 @@ class VibratingBridge(gym.Env):
         self.simulator.take_in_action(action)
         
         # Take in energy before running dynamics
-        starting_energy = self.simulator.energy()
+        starting_energy = self.simulator.energy()/self.equi_energy
         
         # Run the dynamics with the fixed impulse for a fixed number of timepoints
         for t in range(self.timepoints_per_step):
             self.simulator.single_step()
             # Record things
-            self.energy_traj.append(self.simulator.energy())
+            self.energy_traj.append(self.simulator.energy()/self.equi_energy)
             self.u_traj.append(np.copy(self.simulator.u))
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.code_traj.append(2)
         
         # Take in energy after runing dynamics
-        ending_energy = self.simulator.energy()
+        ending_energy = self.simulator.energy()/self.equi_energy
         
         # Reward is positive if energy is reduced
         reward = starting_energy - ending_energy
