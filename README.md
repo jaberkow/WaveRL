@@ -14,7 +14,7 @@ A package for training RL agents to perform active damping on a model of a vibra
 * tests/
 	* config_test.py :  A unnittest test fixture that can be used to make sure `configs/config.yml` has all the appropriate keys and valid parameter settings
 * trained_agents/ : A folder for storing trained agents
-* rollouts/ : A folder for storing rollouts of trained agents
+* rollouts/ : A folder for storing rollouts of trained agents and associated visualizations.  Currently includes an example rollout and visualizations of a trained agent.
 * install_stable_requirements.sh : a shell script for installing all the necessary packages
 * conda_requirements_baseline.yaml : A specification of the conda environment
 
@@ -104,8 +104,8 @@ This will produce two files `rollouts/damping_visualiztion.png` which plots the 
 
 The parameters that govern the vibrating bridge environment (as well as default parameters for training and rollout) are set in `configs/config.yml`.  There are several parameters that may be interesting to alter:
 
-* wave_speed :  This value controls how fast a wave propagates along the bridge.  Larger values yield a more 'taut' bridge and smaller values yield a 'looser' bridge.
-* force_width :  Currently the piston forces are modeled as having gaussian profiles centered at discrete points with widths given by this parameter.  Decreasing this value will the make the forces more pointlike.
-* num_force_points :  The number of pistons.  Increasing this parameter whie decreasing the force_width model's an active damping system capable of more fine grained control.
-* timepoints_per_step : How many steps of the simulator dynamics to run with a fixed value of the pisotn forces.  Increasing this parameter decreases the power of the agent/damping system to respond quickly.
+* wave_speed :  This value controls how fast a wave propagates along the bridge.  Larger values yield a more 'taut' bridge and smaller values yield a 'looser' bridge.  Must be strictly greater than zero.
+* force_width :  Currently the piston forces are modeled as having gaussian profiles centered at discrete points with widths given by this parameter.  Decreasing this value will the make the forces more pointlike.  Must be strictly greater than zero.
+* num_force_points :  The number of pistons.  Increasing this parameter whie decreasing the force_width model's an active damping system capable of more fine grained control.  Must be a positive int.
+* timepoints_per_step : How many steps of the simulator dynamics to run with a fixed value of the pisotn forces.  Increasing this parameter decreases the power of the agent/damping system to respond quickly.  Must be a positive int.
 
