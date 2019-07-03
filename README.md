@@ -95,10 +95,19 @@ The rollout will be saved as `rollouts/damping_rollout.npz`, which can be change
 To visualize a rollout saved in `rollouts/damping_rollout.npz`, run the following command:
 
 ```
-# python src/visualize.py -i rollouts/damping_rollout.npz -f rollouts/damping_visualiztion
+$ python src/visualize.py -i rollouts/damping_rollout.npz -f rollouts/damping_visualiztion
 ```
 
-This will produce two files `rollouts/damping_visualiztion.png` which plots the trajectory of the energy over the episode and `rollouts/damping_visualiztion.gif` which is an animation of the bridge and the impulse force.
+This will produce two files `rollouts/damping_visualiztion.png` which plots the trajectory of the energy over the episode and `rollouts/damping_visualiztion.gif` which is an animation of the bridge and the impulse force.  The visualizations, png or gif, can be viewed from the command line in linux with 
+
+```
+animate <path_to_file>
+```
+and in Macos with 
+
+```
+qlmanage -p <path_to_file>
+```
 
 ## Exploring parameter values
 
