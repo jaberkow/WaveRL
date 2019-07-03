@@ -66,9 +66,6 @@ if __name__ == '__main__':
             line.set_data([],[])
         return lines
 
-
-
-
     def animate(i):
 
         xlist = [x_mesh, x_mesh,x_mesh]
@@ -119,10 +116,7 @@ if __name__ == '__main__':
     plt.plot(warmup_step,warmup_energy,'r',label='warmup')
     plt.plot(equi_step,equi_energy,'g',label='equilibriate')
     plt.plot(dampen_step,dampen_energy,'b',label='dampen')
-
-
     plt.legend(loc='best')
-
     plt.xlabel('step',fontsize=15)
     plt.ylabel('energy',fontsize=15)
     trend_outname = args.output_prefix + '.png'

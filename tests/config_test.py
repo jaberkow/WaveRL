@@ -15,7 +15,7 @@ class ConfigFileTestCase(unittest.TestCase):
         CWD_PATH = os.getcwd()
         config_path = os.path.join(CWD_PATH,'configs/config.yml')
         with open(config_path, 'r') as ymlfile:
-            cfg = yaml.load(ymlfile)
+            cfg = yaml.load(ymlfile,Loader=yaml.FullLoader)
         self.cfg = cfg
 
     def test_training_parameters(self):
