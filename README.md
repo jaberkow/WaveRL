@@ -70,34 +70,42 @@ This package simulates an oscillating bridge by modelling it with the one-dimens
 
 ## Training an agent
 
-To train an agent for 40,000 timesteps on the vibrating bridge environment and save it as `trained_agents/my_first_agent.pkl`, run the following command:
+To train an agent for 40,000 timesteps on the vibrating bridge environment and save it as `trained_agents/damping_agent.pkl`, run the following command:
 
 ```
-$ python src/train.py -n 40000 -m trained_agents/my_first_agent
+$ python src/train.py -n 40000 -m trained_agents/damping_agent
 ```
-This command will also produce a TensorBoard folder at `/tensorboard_log` that can be visualized by running the following command from the same directory
+Training may produce deprecationg warnings due to the version of TensorFlow used in the current release of the stable baselines package, which can be ignored.  This command will also produce a TensorBoard folder at `/tensorboard_log` that can be visualized by running the following command from the same directory and following the instructions in the terminal:
 
 ```
 $ tensorboard --logdir tensorboard_log/
 ```
 ## Rolling out a trained agent
 
-To rollout a trained agent that is stored at `trained_agents/my_first_agent.pkl` for 60 steps, run the following command:
+To rollout a trained agent that is stored at `trained_agents/damping_agent.pkl` for 60 steps, run the following command:
 
 ```
-$ python src/rollout.py -n 60 -i trained_agents/my_first_agent.pkl -f rollouts/output.npz
+$ python src/rollout.py -n 60 -i trained_agents/damping_agent.pkl -f rollouts/damping_rollout.npz
 ```
 
-The rollout will be saved as `rollouts/output.npz`, which can be changed by passing `-f <filename>` to the above command.  Note that the trajectories produced will have length equal to the number of rollout steps + the number of warmup steps + the number of equilibriation steps (values of which are set in `/configs/config.yml`).
+The rollout will be saved as `rollouts/damping_rollout.npz`, which can be changed by passing `-f <filename>` to the above command.  Note that the trajectories produced will have length equal to the number of rollout steps + the number of warmup steps + the number of equilibriation steps (values of which are set in `/configs/config.yml`).
 
-### Visualizing a rollout
+## Visualizing a rollout
 
-To visualize a rollout saved in `rollouts/output.npz`, run the following command:
+To visualize a rollout saved in `rollouts/damping_rollout.npz`, run the following command:
 
 ```
-# python src/visualize.py -i rollouts/output.npz -f rollouts/first_output
+# python src/visualize.py -i rollouts/damping_rollout.npz -f rollouts/damping_visualiztion
 ```
 
-This will produce two files `first_output.png` which plots the trajectory of the energy over the episode and `first_output.gif` which is an animation of the bridge and the impulse force.
+This will produce two files `rollouts/damping_visualiztion.png` which plots the trajectory of the energy over the episode and `rollouts/damping_visualiztion.gif` which is an animation of the bridge and the impulse force.
 
+## Exploring parameter values
+
+The parameters that govern the vibrating bridge environment (as well as default parameters for training and rollout) are set in `configs/config.yml`.  There are several parameters that may be interesting to alter:
+
+* wave_speed :  This value controls how fast a wave propagates along the bridge.  Larger values yield a more 'taut' bridge and smaller values yield a 'looser' bridge.
+* force_width :  Currently the piston forces are modeled as having gaussian profiles centered at discrete points with widths given by this parameter.  Decreasing this value will the make the forces more pointlike.
+* num_force_points :  The number of pistons.  Increasing this parameter whie decreasing the force_width model's an active damping system capable of more fine grained control.
+* timepoints_per_step : How many steps of the simulator dynamics to run with a fixed value of the pisotn forces.  Increasing this parameter decreases the power of the agent/damping system to respond quickly.
 
