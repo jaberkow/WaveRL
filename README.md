@@ -68,7 +68,7 @@ To make sure that all the parameter values are valid.
 
 This package simulates an oscillating bridge by modelling it with the one-dimensional [wave equation](https://en.wikipedia.org/wiki/Wave_equation), which is simulated using a [finite difference solver](https://en.wikipedia.org/wiki/Finite_difference_method).  The action space of the environment represents pistons that apply a force to actively dampen vibrations in the bridge.  The reward signal is proportional to the decrease in energy of the system.  One episode of the environment involves 3 phases:  1) A "warmup phase" where an external force is applied to the system to cause oscillations 2) An "equilibriation" phase where the oscillations settle in to stable patterns and 3) A dampening phase where the agent attempts to dampen the oscillations.
 
-Here is an example of a single episode.
+Here is an example of a single episode, the red line is the bridge and the green line reprents a smoothed profile of the forces applied to the bridge by the pistons.
 
 ![](rollouts/example_visualization.gif)
 
@@ -107,7 +107,7 @@ This will produce two files `rollouts/damping_visualiztion.png` which plots the 
 ```
 animate <path_to_file>
 ```
-and in Macos with
+and in MacOS with
 
 ```
 qlmanage -p <path_to_file>
