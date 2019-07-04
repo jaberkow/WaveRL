@@ -118,6 +118,17 @@ qlmanage -p <path_to_file>
 The parameters that govern the vibrating bridge environment (as well as default parameters for training and rollout) are set in `configs/config.yml`.  There are several parameters that may be interesting to alter:
 
 * wave_speed :  This value controls how fast a wave propagates along the bridge.  Larger values yield a more 'taut' bridge and smaller values yield a 'looser' bridge.  Must be strictly greater than zero.
-* force_width :  Currently the piston forces are modeled as having gaussian profiles centered at discrete points with widths given by this parameter.  Decreasing this value will the make the forces more pointlike.  Must be strictly greater than zero.
-* num_force_points :  The number of pistons.  Increasing this parameter whie decreasing the force_width model's an active damping system capable of more fine grained control.  Must be a positive int.
-* timepoints_per_step : How many steps of the simulator dynamics to run with a fixed value of the pisotn forces.  Increasing this parameter decreases the power of the agent/damping system to respond quickly.  Must be a positive int.
+* force_width :  Currently the piston forces are modeled as having Gaussian profiles centered at discrete points with widths given by this parameter.  Decreasing this value will the make the forces more point-like.  Must be strictly greater than zero.
+* num_force_points :  The number of pistons.  Increasing this parameter while decreasing the force_width model's an active damping system capable of more fine grained control.  Must be a positive int.
+* timepoints_per_step : How many steps of the simulator dynamics to run with a fixed value of the piston forces.  Increasing this parameter decreases the power of the agent/damping system to respond quickly.  Must be a positive int.
+
+### Rolling out an agent trained on an environment with different parameters
+
+If you are interested in judging how well an agent trained with one set of parameters governing the vibrating bridge environment generalizes to an environment with different parameters you can train an agent, then change **some** parameters (see below) in the configuration file (`/configs/config.yml`), and roll out the `.pkl` file of the trained agent in the normal way.  However, several parameters **must** remain constant between training and rolling out, or else the OpenAI gym will throw an error because the observation/action spaces have changed.  These fixed parameters are as follows:
+
+* num_lattice_points
+* num_force_points
+* min_force
+* max_force
+* min_u
+* max_u
