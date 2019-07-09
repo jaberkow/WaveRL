@@ -16,7 +16,7 @@ import yaml
 class VibratingBridge(gym.Env):
     """
     An environment that can be used to learn active damping control policies for
-    a an oscillating bridge modeled with the one dimensional wave equation with 
+    a an oscillating bridge modeled with the one dimensional wave equation with
     endpoints fixed at zero.
 
     The goal of active damping is to apply external forces to a oscillating system
@@ -50,7 +50,7 @@ class VibratingBridge(gym.Env):
 
 
         """
-        
+
         self.num_warmup_steps = config['num_warmup_steps']
         self.num_equi_steps = config['num_equi_steps']
         self.num_force_points = config['num_force_points']
@@ -63,19 +63,19 @@ class VibratingBridge(gym.Env):
         self.max_steps = config['max_steps']
         self.Nx = config['num_lattice_points']
         self.drive_magnitude = config['drive_magnitude']
-        # Load the simulator class, thi is the line to change if you 
+        # Load the simulator class, thi is the line to change if you
         # use a different method for simulating the dynamics
         self.simulator = Wave1D(config)
-        
+
         # Build up the action space
         self.action_space = Box(low=self.min_force,high=self.max_force,
                                 shape=(self.num_force_points,),dtype=np.float32)
         # Build up the observation space
         self.observation_space = Box(low=self.min_u,high=self.max_u,
                                      shape=(1,self.Nx+1,3),dtype=np.float32)
-        
+
         # Allocate for trajectories
-        self.u_traj = []
+        self.height_traj = []
         self.impulse_traj = []
         self.energy_traj = []
         self.code_traj = []
@@ -89,13 +89,13 @@ class VibratingBridge(gym.Env):
         # Reset the step_number
         self.step_number = 0
         # Clear out cache of trajectories
-        self.u_traj = []
+        self.height_traj = []
         self.impulse_traj = []
         self.energy_traj = []
         self.code_traj = [] # For rendering functions to track stage of simulation
         # Use the simulator's reset method, note that this also
         self.simulator.reset()
-        
+
         # Random fixed action to warm up system
         action = self.action_space.sample()
         # Normalize it to make it larger
@@ -104,19 +104,19 @@ class VibratingBridge(gym.Env):
         self.simulator.take_in_action(action)
         # Run some warmup steps
         for t in range(self.num_warmup_steps):
-            self.u_traj.append(np.copy(self.simulator.u))
+            self.height_traj.append(np.copy(self.simulator.height))
             self.energy_traj.append(self.simulator.energy())
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.simulator.single_step()
             self.code_traj.append(0)
-        
+
         # Don't perturb system, let it equilibriate
         empty_action = 0.0*self.action_space.sample()
         self.simulator.take_in_action(empty_action)
         # equi_energy will be used for instance normalization
         self.equi_energy = 0
         for t in range(self.num_equi_steps):
-            self.u_traj.append(np.copy(self.simulator.u))
+            self.height_traj.append(np.copy(self.simulator.height))
             self.energy_traj.append(self.simulator.energy())
             self.equi_energy += self.simulator.energy()
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
@@ -127,7 +127,7 @@ class VibratingBridge(gym.Env):
         # Normalize the current energy_trajectory
         for i in range(len(self.energy_traj)):
             self.energy_traj[i] /= self.equi_energy
-        
+
 
         observation = self.simulator.get_observation()
         return observation
@@ -137,62 +137,50 @@ class VibratingBridge(gym.Env):
         The main action step, we run a step of the finite difference scheme after
         we parameterize the impulse using parameters from action
         """
-        
+
         # First we update the simulator's impulse profile using the action
         self.simulator.take_in_action(action)
-        
+
         # Take in energy before running dynamics
         starting_energy = self.simulator.energy()/self.equi_energy
-        
+
         # Run the dynamics with the fixed impulse for a fixed number of timepoints
         for t in range(self.timepoints_per_step):
             self.simulator.single_step()
             # Record things
             self.energy_traj.append(self.simulator.energy()/self.equi_energy)
-            self.u_traj.append(np.copy(self.simulator.u))
+            self.height_traj.append(np.copy(self.simulator.height))
             self.impulse_traj.append(np.copy(self.simulator.get_impulse_profile()))
             self.code_traj.append(2)
-        
+
         # Take in energy after runing dynamics
         ending_energy = self.simulator.energy()/self.equi_energy
-        
+
         # Reward is positive if energy is reduced
         reward = starting_energy - ending_energy
-        
+
         observation = self.simulator.get_observation()
         # Properly bound the observation
         clipped_observation = np.clip(observation,self.min_u,self.max_u)
-        
+
         # Update step number and check to see if epoch is over
         self.step_number += 1
         if self.step_number >= self.max_steps:
             done = True
         else:
             done = False
-        
+
         return clipped_observation,reward,done,{}
 
     def render(self,fname='testout'):
         """
         The render method just saves to file for later animation
         """
-        
-        u_array = np.stack(self.u_traj,axis=1)
+
+        height_array = np.stack(self.height_traj,axis=1)
         impulse_array = np.stack(self.impulse_traj,axis=1)
         energy_array = np.array(self.energy_traj)
         code_array = np.array(self.code_traj,dtype=np.int32)
-        np.savez(fname,u_array=u_array,impulse_array=impulse_array,
+        np.savez(fname,height_array=height_array,impulse_array=impulse_array,
                  energy_array=energy_array,code_array=code_array,
                  x_mesh=self.simulator.x_mesh)
-
-
-
-
-
-
-
-
-
-        
-
-

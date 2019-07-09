@@ -32,7 +32,7 @@ if __name__ == '__main__':
     data = np.load(args.rollout_file)
 
     # Unpack the data
-    u_array = data['u_array']
+    u_array = data['height_array']
     impulse_array = data['impulse_array']
     energy_array = data['energy_array']
     x_mesh = data['x_mesh']
@@ -78,7 +78,7 @@ if __name__ == '__main__':
             plt.title('Step {} (dampen)'.format(int(i)),fontsize=15)
         #for index in range(0,1):
         for lnum,line in enumerate(lines):
-            line.set_data(xlist[lnum], ylist[lnum]) # set data for each line separately. 
+            line.set_data(xlist[lnum], ylist[lnum]) # set data for each line separately.
 
         return lines
 
