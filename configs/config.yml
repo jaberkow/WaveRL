@@ -1,7 +1,10 @@
-# General params for training and rolling out
+# General params for training, rolling out, and evaluating
 num_learning_steps: 40000
 num_rollout_steps: 100
+evaluation_reps: 10
 learning_rate_val: 0.00025
+#the evaluation enegy threshold
+threshold: 0.25
 
 # Configuration params for the active damping environment
 # The time interval between steps of the dynamics
@@ -37,9 +40,3 @@ max_force: 1.0
 # Set the observable range of the observation space
 min_u: -20
 max_u: 20
-
-
-
-
-
-

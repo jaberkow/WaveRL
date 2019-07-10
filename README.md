@@ -113,6 +113,14 @@ and in MacOS with
 qlmanage -p <path_to_file>
 ```
 
+## Evaluating a trained agent
+
+In order to evaluate the quality of a trained agent, one can measure how many damping steps it takes the agent to dissipate a certain percentage of the energy in the bridge.  The following script takes the agent stored at `trained_agents/damping_agent.pkl` and measures how many damping steps it takes to dissipate 75% of the bridge's energy (relative to the average during the equilibriation phase) for 20 different initializations.  The results are stored at `trained_agents/agent_evaluation.npy`
+
+```
+python src/evaluate.py -r 20 -t 0.25 -i trained_agents/damping_agent.pkl -f trained_agents/agent_evaluation
+```
+
 ## Exploring parameter values
 
 The parameters that govern the vibrating bridge environment (as well as default parameters for training and rollout) are set in `configs/config.yml`.  There are several parameters that may be interesting to alter:

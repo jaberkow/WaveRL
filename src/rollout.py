@@ -1,5 +1,5 @@
 """
-This script produces vi
+This script produces a rollout of an agent
 
 Currently it takes in several command line arguments:
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     parser.add_argument('-f',dest='output_filename',
         help='Name of output file',default='rollouts/output',type=str)
     args = parser.parse_args()
-    
+
     # Make sure we find where the config file is
     CWD_PATH = os.getcwd()
     config_path = os.path.join(CWD_PATH,'configs/config.yml')
